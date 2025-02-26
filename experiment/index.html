@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Sub Count Setup</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #111;
+      color: white;
+      font-size: 1.5em;
+    }
+
+    .container {
+      margin-top: 50px;
+    }
+
+    input,
+    button {
+      font-size: 1em;
+      padding: 10px;
+      margin: 10px;
+      width: 80%;
+      max-width: 400px;
+    }
+
+    label {
+      display: block;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Live YouTube Sub Count</h1>
+    <p>Enter YouTube Channel ID, Username, or URL:</p>
+    <input type="text" id="channelInput" placeholder="Enter Channel ID or URL">
+
+    <label>
+      <input type="checkbox" id="enableSound"> Enable Sound
+    </label>
+    <label>
+      <input type="checkbox" id="enableFireworks"> Enable Fireworks
+    </label>
+    <label>
+      <input type="checkbox" id="enableFade"> Enable Fade Effect
+    </label>
+
+    <button onclick="startDisplay()">Start Display</button>
+  </div>
+
+  <script>
+    function startDisplay() {
+      const channel = document.getElementById("channelInput").value.trim();
+      const sound = document.getElementById("enableSound").checked;
+      const fireworks = document.getElementById("enableFireworks").checked;
+      const fade = document.getElementById("enableFade").checked;
+
+      if (!channel) {
+        alert("Please enter a YouTube Channel ID or URL!");
+        return;
+      }
+
+      // Store settings in URL parameters
+      const url = `display.html?channel=${encodeURIComponent(channel)}&sound=${sound}&fireworks=${fireworks}&fade=${fade}`;
+      window.location.href = url;
+    }
+  </script>
+</body>
+
+</html>
