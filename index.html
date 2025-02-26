@@ -19,13 +19,24 @@
       font-weight: bold;
       margin-top: 20px;
     }
+
+    #enableSound {
+      font-size: 1em;
+      padding: 10px 20px;
+      margin-top: 20px;
+      cursor: pointer;
+    }
   </style>
 </head>
 
 <body>
   <h1>YouTube Abonnenten</h1>
   <div id="subCount">Lädt...</div>
-  <audio id="subSound" src="subscribe.mp3"></audio> <!-- Ton Datei -->
+  <button id="enableSound">🔊 Sound aktivieren</button> <!-- Button to enable sound -->
+
+  <!-- Hidden Audio Element -->
+  <audio id="subSound" src="subscribe.mp3"></audio>
+
   <script src="script.js"></script>
 </body>
 
