@@ -12,12 +12,14 @@
       background-color: #111;
       color: white;
       font-size: 2em;
+      overflow: hidden;
     }
 
     #subCount {
       font-size: 4em;
       font-weight: bold;
       margin-top: 20px;
+      color: antiquewhite;
     }
 
     #enableSound {
@@ -26,15 +28,28 @@
       margin-top: 20px;
       cursor: pointer;
     }
+
+    /* Canvas für Feuerwerk */
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
   </style>
 </head>
 
 <body>
-  <h1>YouTube Abonnenten</h1>
-  <div id="subCount">Lädt...</div>
-  <button id="enableSound">🔊 Sound aktivieren</button> <!-- Button to enable sound -->
+  <h1>YouTube Subs</h1>
+  <div id="subCount">Loading...</div>
+  <button id="enableSound">🔊 Press once to enable sound</button>
 
-  <!-- Hidden Audio Element -->
+  <!-- Feuerwerk Canvas -->
+  <canvas id="fireworkCanvas"></canvas>
+
+  <!-- Audio für Abo-Zuwachs -->
   <audio id="subSound" src="subscribe.mp3"></audio>
 
   <script src="script.js"></script>
