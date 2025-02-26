@@ -4,18 +4,18 @@ const subCountElement = document.getElementById("subCount");
 const subSound = document.getElementById("subSound");
 const enableSoundButton = document.getElementById("enableSound");
 
-let lastSubCount = 0;
-let userInteracted = false; // Tracks if the user has interacted
+let lastSubCount = "0"; // Store as string to compare digits
+let userInteracted = false;
 
-// Sound aktivieren durch Button-Klick
+// Sound activation on button click
 enableSoundButton.addEventListener("click", () => {
   subSound.play().then(() => {
     userInteracted = true;
-    enableSoundButton.style.display = "none"; // Button verstecken
+    enableSoundButton.style.display = "none";
   }).catch(error => console.error("Audio play blocked:", error));
 });
 
-// Funktion für den Sound-Effekt
+// Function to play sound
 function playSound() {
   if (userInteracted) {
     subSound.volume = 1.0;
@@ -24,7 +24,7 @@ function playSound() {
   }
 }
 
-// 🚀 Feuerwerk starten
+// 🚀 Firework animation (unchanged)
 function startFirework() {
   const canvas = document.getElementById("fireworkCanvas");
   const ctx = canvas.getContext("2d");
@@ -33,50 +33,42 @@ function startFirework() {
   canvas.height = window.innerHeight;
 
   const particles = [];
-
-  // Create more particles for a bigger explosion
-  for (let i = 0; i < 150; i++) { // More particles for full-screen effect
+  for (let i = 0; i < 150; i++) {
     particles.push({
-      x: Math.random() * canvas.width, // Spawn anywhere on screen
-      y: Math.random() * canvas.height, // Spawn anywhere on screen
-      size: Math.random() * 6 + 2, // Bigger particles for visibility
-      speedX: Math.random() * 6 - 3, // More movement
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: Math.random() * 6 + 2,
+      speedX: Math.random() * 6 - 3,
       speedY: Math.random() * 6 - 3,
       color: `hsl(${Math.random() * 360}, 100%, 60%)`,
-      alpha: 1, // Full opacity
-      life: 200 // Longer life for lasting effect
+      alpha: 1,
+      life: 200
     });
   }
 
   function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     for (let i = particles.length - 1; i >= 0; i--) {
       let particle = particles[i];
 
-      // Move particles in all directions
       particle.x += particle.speedX;
       particle.y += particle.speedY;
       particle.life -= 1;
-      particle.alpha -= 0.004; // Slow fade-out
+      particle.alpha -= 0.004;
 
-      // Draw particles
       ctx.fillStyle = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, ${particle.alpha})`;
       ctx.beginPath();
       ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
       ctx.fill();
 
-      // Remove faded particles
       if (particle.alpha <= 0 || particle.life <= 0) {
         particles.splice(i, 1);
       }
     }
 
-    // Keep animation going while particles exist
     if (particles.length > 0) {
       requestAnimationFrame(animate);
     } else {
-      // Clear canvas after explosion completes
       setTimeout(() => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
       }, 500);
@@ -86,25 +78,41 @@ function startFirework() {
   animate();
 }
 
-// 🚀 YouTube API aufrufen und Abonnentenzahl abrufen
+// 🚀 Fetch YouTube Subscriber Count
 async function fetchSubCount() {
   try {
     const response = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${channelId}&key=${apiKey}`);
     const data = await response.json();
-    const subCount = parseInt(data.items[0].statistics.subscriberCount);
+    const newSubCount = data.items[0].statistics.subscriberCount.toString(); // Convert to string
+    const oldSubCount = lastSubCount.padStart(newSubCount.length, "0"); // Ensure length matches
 
-    if (subCount > lastSubCount) {
-      playSound(); // Sound abspielen
-      startFirework(); // Feuerwerk starten
+    // Create new subCount display with fading effect
+    subCountElement.innerHTML = ""; // Clear previous content
+
+    for (let i = 0; i < newSubCount.length; i++) {
+      const digitSpan = document.createElement("span");
+      digitSpan.innerText = newSubCount[i];
+
+      if (oldSubCount[i] !== newSubCount[i]) {
+        digitSpan.style.transition = "opacity 1s ease-in-out";
+        digitSpan.style.opacity = "0";
+        setTimeout(() => digitSpan.style.opacity = "1", 50);
+      }
+
+      subCountElement.appendChild(digitSpan);
     }
 
-    lastSubCount = subCount;
-    subCountElement.innerText = subCount.toLocaleString();
+    if (parseInt(newSubCount) > parseInt(lastSubCount)) {
+      playSound();
+      startFirework();
+    }
+
+    lastSubCount = newSubCount;
   } catch (error) {
     console.error("Fehler beim Abrufen der Abonnentenzahl:", error);
   }
 }
 
-// Abonnentenzahl alle 5 Sekunden aktualisieren
+// Refresh every 5 seconds
 setInterval(fetchSubCount, 5000);
 fetchSubCount();
